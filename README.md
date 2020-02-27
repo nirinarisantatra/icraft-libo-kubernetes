@@ -11,22 +11,21 @@ YAML files are provided to configure the Kubernetes cluster and to set-up Nextcl
 
 Type the following commands to install required packages:
 ```shell=
-sudo apt update && sudo apt upgrade -y
-sudo apt install -y docker.io curl gnupg
-sudo systemctl enable docker
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
-echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
-sudo apt update
-sudo apt install -y kubeadm
-sudo swapoff -a
-sudo kubeadm init --pod-network-cidr=10.244.0.0/16
-mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-kubectl taint nodes --all node-role.kubernetes.io/master-
-sudo mkdir /opt/nextcloud-k8s
-sudo cp ~/kubernetes-yaml/nginx.conf /opt/nextcloud-k8s/
+$ sudo apt update && sudo apt upgrade -y
+$ sudo apt install -y docker.io curl gnupg
+$ sudo systemctl enable docker
+$ curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
+$ echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+$ sudo apt update
+$ sudo apt install -y kubeadm
+$ sudo swapoff -a
+$ sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+$ mkdir -p $HOME/.kube
+$ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+$ sudo chown $(id -u):$(id -g) $HOME/.kube/config
+$ kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+$ kubectl taint nodes --all node-role.kubernetes.io/master-
+$ git clone https://github.com/nirinarisantatra/nextcloud-kubernetes/tree/master
 ```
 
 Note down the kubeadm join-message printed in the console to be able to connect further Kubernetes nodes in the future.
@@ -38,7 +37,7 @@ $ watch -n 5 kubectl get deployment,svc,pods,pvc,pv,ing
 ```
 
 ## MariaDB
-Clone this repository and change into `kubernetes-yaml` directory.
+Change into `kubernetes-yaml` directory.
 
 Edit the db-deployment.yaml file to:
 1. Change MYSQL_PASSWORD

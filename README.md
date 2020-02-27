@@ -1,6 +1,6 @@
 # Nextcloud and Collabora Online on Kubernetes
 
-The objective of this project is to provive a highly scalable and easy-to-deploy LibreOffice Online for collaborative works using the combination of Nextcloud and multiple instances of Collabora Online loadbalanced by HAProxy.
+The objective of this project is to provide a highly scalable and easy-to-deploy LibreOffice Online for collaborative works using the combination of Nextcloud and multiple instances of Collabora Online loadbalanced by HAProxy.
 
 YAML files are provided to configure the Kubernetes cluster and to set-up Nextcloud using MariaDB, Collabora Online, HAProxy and Nginx as a SSL/TLS proxy.
 
@@ -30,7 +30,7 @@ $ git clone https://github.com/nirinarisantatra/nextcloud-kubernetes
 
 Note down the kubeadm join-message printed in the console to be able to connect further Kubernetes nodes in the future.
 
-Use the following in an extra-terminal to be able to see what the Kubernetes-cluster is doing:
+Open the following in an extra-terminal to be able to see what happen within the Kubernetes cluster:
 
 ```shell=
 $ watch -n 5 kubectl get deployment,svc,pods,pvc,pv,ing
@@ -128,4 +128,4 @@ To permanently disable the swap's use on the system, comment the corresponding l
 #UUID=83046e3c-0d98-407f-afcf-8500643f0494 none            swap    sw              0       0
 ```
 
-###### tags: `iCraft` `Documentation`
+###### tags: `iCraft` `Documentation` `Nextcloud` `Kubernetes`

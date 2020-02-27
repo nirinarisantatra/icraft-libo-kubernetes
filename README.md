@@ -25,7 +25,7 @@ $ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 $ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 $ kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 $ kubectl taint nodes --all node-role.kubernetes.io/master-
-$ git clone https://github.com/nirinarisantatra/nextcloud-kubernetes/tree/master
+$ git clone https://github.com/nirinarisantatra/nextcloud-kubernetes
 ```
 
 Note down the kubeadm join-message printed in the console to be able to connect further Kubernetes nodes in the future.
@@ -39,10 +39,10 @@ $ watch -n 5 kubectl get deployment,svc,pods,pvc,pv,ing
 ## MariaDB
 Change into `kubernetes-yaml` directory.
 
-Edit the db-deployment.yaml file to:
+Edit the `db-deployment.yaml` file to:
 1. Change MYSQL_PASSWORD
 2. Change MYSQL_ROOT_PASSWORD
-3. Change database's HostPath, which should be the absolute location of db-pv (for example, /home/sant/nextcloud-k8s/db-pv)
+3. Change database's hostPath, which should be the absolute location of db-pv (for example, /home/sant/nextcloud-k8s/db-pv)
 
 Then deploy using the following commands:
 ```shell=
@@ -51,7 +51,7 @@ $ kubectl create -f db-svc.yaml
 ```
 
 ## Nextcloud
-Next, adjust the following by editing nc-deployment.yaml:
+Next, adjust the following by editing `nc-deployment.yaml`:
 1. Change NEXTCLOUD_URL
 2. Change NEXTCLOUD_ADMIN_PASSWORD
 3. Change MYSQL_PASSWORD (the value entered before)
@@ -63,12 +63,12 @@ $ kubectl create -f nc-deployment.yaml
 $ kubectl create -f nc-svc.yaml
 ```
 ## Collabora Online
-Edit the file c{1-3}-deployment.yaml and update the following field:
+Edit the file `c{1-3}-deployment.yaml` and update the following fields:
 1. Change the hostAliases IP
 2. Change the hostnames
 3. Change the volumes hostPath (for example, /home/sant/nextcloud-k8s/collab-pv)
 
-Inside loolwsd.xml:
+Inside `loolwsd.xml`:
 1. Check that the IP private block and the FQDN of the reverse proxy are allowed on "Backend storage" section
 2. Add the IPv4 private block on "Network settings" if not present
 
@@ -79,7 +79,7 @@ $ kubectl create -f c1-svc.yaml -f c2-svc.yaml -f c3-svc.yaml
 ```
 
 ## HAProxy
-The loadbalancer's configuration can be customized by editing the file haproxy.cfg:
+The loadbalancer's configuration can be customized by editing the file `haproxy.cfg`:
 1. Change the frontend SSL certificate file path
 2. Change the backend section to indicate the number of Collabora Online instances used
 
@@ -88,14 +88,14 @@ Execute the following command to create the SSL certificate of HAProxy:
 $ sudo cat <cert_name>.key <cert_name>.crt >> <cert_name>.pem
 ```
 
-Then update hp-deployment.yaml:
+Then update `hp-deployment.yaml`:
 1. Change configuration's hostPath to the location provided before (for example, /home/sant/nextcloud-k8s/haproxy.cfg)
 2. Change cert's hostPath (for example, /home/sant/nextcloud-k8s/certs-pv)
 
 ## Self-signed certificates
 The [OMGWTFSSL-Docker](https://hub.docker.com/r/paulczar/omgwtfssl/) image offers an easy-to-use certificate creation. Here we are using only a Pod, not a Deployment. Once the certificates are generated, the Pod will stop.
 
-Update omgwtfssl-pod.yaml according to the following:
+Update `omgwtfssl-pod.yaml` according to the following:
 1. Change SSL_SUBJECT to your server's name
 2. Change CA_SUBJECT to your mail-adress
 3. Change SSL_KEY to a proper filename
@@ -103,15 +103,17 @@ Update omgwtfssl-pod.yaml according to the following:
 5. Change SSL_CERT to a proper filename
 6. Change cert's hostPath (for example, /home/sant/nextcloud-k8s/certs-pv)
 
+***Note***: Let's Enccrypt certificates can also be used for this deployment.
+
 ## Nginx as a reverse proxy
 Use of a Nginx in front of Nextcloud and Collabora Online makes SSL encryption's configuration easy. The proxy is not a Deployment but a Pod, to provide the standard HTTP/HTTPS ports 80 and 443.
 
-Change the following inside nginx.conf:
+Change the following inside `nginx.conf`:
 1. Change server_name (two locations in the file) to the server name provided earlier for SSL_SUBJECT
 2. Change ssl_certificate to the filename provided earlier for SSL_CERT
 3. Change ssl_certificate_key to the filename provided earlier for SSL_KEY
 
-Update proxy-pod.yaml and:
+Update `proxy-pod.yaml`:
 1. Change cert's hostPath to the location provided before ---> change nginx-config's hostpath to the location where nginx.conf was stored before (for example, /home/sant/nextcloud-k8s/nginx.conf)
 2. Change nginx-logs' hostpath to a proper location
 
@@ -121,7 +123,7 @@ $ kubectl create -f proxy-pod.yaml
 ```
 
 ## Disable swap
-To permanently disable the swap's use on the system, comment the corresponding line in /etc/fstab like this:
+To permanently disable the swap's use on the system, comment the corresponding line in `/etc/fstab` like this:
 ```shell=
 #UUID=83046e3c-0d98-407f-afcf-8500643f0494 none            swap    sw              0       0
 ```

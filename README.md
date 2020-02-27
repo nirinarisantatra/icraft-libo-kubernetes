@@ -56,16 +56,18 @@ Next, adjust the following by editing `nc-deployment.yaml`:
 2. Change NEXTCLOUD_ADMIN_PASSWORD
 3. Change MYSQL_PASSWORD (the value entered before)
 4. Change HTML's hostPath (for example, /home/sant/nextcloud-k8s/nc-pv)
+5. Change the hostAliases IP
+6. Change the "hostnames" part
 
 Deploy using the following commands:
 ```shell=
 $ kubectl create -f nc-deployment.yaml
 $ kubectl create -f nc-svc.yaml
 ```
-## Collabora Online
+## Collabora Online (CODE version)
 Edit the file `c{1-3}-deployment.yaml` and update the following fields:
 1. Change the hostAliases IP
-2. Change the hostnames
+2. Change the "hostnames"
 3. Change the volumes hostPath (for example, /home/sant/nextcloud-k8s/collab-pv)
 
 Inside `loolwsd.xml`:
@@ -77,6 +79,8 @@ Deploy by executing these commands:
 $ kubectl create -f c1-deployment.yaml -f c2-deployment.yaml -f c3-deployment.yaml
 $ kubectl create -f c1-svc.yaml -f c2-svc.yaml -f c3-svc.yaml
 ```
+
+***Note***: Extra configurations are required to be done from the web interface of Nextcloud, after the deployment on Kubernetes.
 
 ## HAProxy
 The loadbalancer's configuration can be customized by editing the file `haproxy.cfg`:

@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nc
+  name: nc
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: nc
+  template:
+    metadata:
+      labels:
+        app: nc
+    spec:
+      containers:
+      - env:
+        - name: TZ
+          value: Asia/Japan
+        - name: DEBUG
+          value: "false"
+        - name: NEXTCLOUD_URL
+          value: http://nc.icraft.local
+        - name: NEXTCLOUD_ADMIN_USER
+          value: admin
+        - name: NEXTCLOUD_ADMIN_PASSWORD
+          value: police
+        - name: NEXTCLOUD_UPLOAD_MAX_FILESIZE
+          value: 1G
+        - name: NEXTCLOUD_MAX_FILE_UPLOADS
+          value: "20"
+          
+        - name: MYSQL_DATABASE
+          value: nextcloud
+        - name: MYSQL_HOST
+          value: db
+        - name: MYSQL_PASSWORD
+          value: n3xtcloud
+        - name: MYSQL_USER
+          value: nextcloud
+
+        - name: HAPROXY_HOST
+          value: hp
+        name: nc
+        image: nextcloud
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/www/html
+          name: html
+      restartPolicy: Always
+      hostAliases:
+        - ip: "192.168.25.180"
+          hostnames:
+          - "nc.icraft.local"
+      volumes:
+        - name: html
+          hostPath:
+            path: "/opt/nextcloud-k8s/nc-pv"

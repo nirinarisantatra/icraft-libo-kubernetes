@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hp
+  name: hp
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: hp
+  template:
+    metadata:
+      labels:
+        app: hp
+    spec:
+      containers:
+      - env:
+        - name: COLLABORA_HOST
+          value: collabora
+        name: hp
+        image: haproxytech/haproxy-debian:1.8
+        ports:
+        - containerPort: 9980
+          protocol: TCP
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/haproxy/certs
+          name: certs
+        - mountPath: /etc/haproxy/haproxy.cfg
+          name: haproxy-config
+      restartPolicy: Always
+      volumes:
+        - name: certs
+          hostPath:
+            path: "/opt/nextcloud-k8s/certs-pv"
+        - name: haproxy-config
+          hostPath:
+            path: "/opt/nextcloud-k8s/haproxy.cfg"
+            type: File

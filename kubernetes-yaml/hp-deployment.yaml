@@ -17,10 +17,7 @@ spec:
         app: hp
     spec:
       containers:
-      - env:
-        - name: COLLABORA_HOST
-          value: collabora
-        name: hp
+      - name: hp
         image: haproxytech/haproxy-debian:1.8
         ports:
         - containerPort: 9980
